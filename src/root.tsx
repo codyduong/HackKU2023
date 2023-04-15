@@ -1,7 +1,6 @@
 // @refresh reload
 import { Suspense } from 'solid-js';
 import {
-  A,
   Body,
   ErrorBoundary,
   FileRoutes,
@@ -13,6 +12,7 @@ import {
   Title,
 } from 'solid-start';
 import './root.css';
+import '@fontsource/atkinson-hyperlegible';
 
 export default function Root() {
   return (
@@ -25,8 +25,6 @@ export default function Root() {
       <Body>
         <Suspense>
           <ErrorBoundary>
-            <A href="/">Index</A>
-            <A href="/about">About</A>
             <Routes>
               <FileRoutes />
             </Routes>
