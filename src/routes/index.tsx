@@ -1,6 +1,5 @@
 import { Title } from 'solid-start';
 import { css } from 'solid-styled';
-import Counter from '~/components/Counter';
 
 export default function Home() {
   css`
@@ -13,7 +12,6 @@ export default function Home() {
     <main>
       <Title>Hello World</Title>
       <h1>Hello world!</h1>
-      <Counter />
       <p>
         Visit{' '}
         <a href="https://start.solidjs.com" target="_blank">
