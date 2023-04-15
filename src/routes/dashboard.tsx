@@ -12,14 +12,19 @@ import {
   getDocs,
   query,
   where,
+  QuerySnapshot,
+  DocumentData,
 } from 'firebase/firestore';
 import { db } from '~/auth';
 import { ImCancelCircle } from 'solid-icons/im';
+import Modal, { CreateCommentModal } from '~/components/Modal';
 
 type SelectPlaceDetails = Pick<
   google.maps.places.PlaceResult,
-  'icon' | 'icon_background_color'
->;
+  'icon' | 'icon_background_color' | 'name'
+> & {
+  placePhotos: string[];
+};
 
 export type Place = {
   placeId: null | string;
@@ -29,8 +34,20 @@ export type Place = {
 export type PlaceFirestore = {
   lat: null | number;
   lng: null | number;
-  tags: null | string[];
+  tags:
+    | null
+    | (string | { tag: string; description?: string; link?: string })[];
 } & SelectPlaceDetails;
+
+export type CommentFirestore = {
+  author: string;
+  authorId: string;
+  comment: string;
+};
+
+export type CommentsFirestore = {
+  comments: [];
+};
 
 const styles: Record<string, google.maps.MapTypeStyle[]> = {
   default: [],
@@ -55,6 +72,7 @@ export default function Dashboard() {
   const [place, setPlace] = createSignal<Place>({
     placeId: null,
     latLng: null,
+    placePhotos: [],
   });
   const [mapBounds, setMapBounds] = createSignal<{
     lat: {
@@ -74,6 +92,8 @@ export default function Dashboard() {
   const [viewingMode, setViewingMode] = createSignal<'creating' | 'viewing'>(
     'creating'
   );
+  const [comments, setComments] = createSignal<QuerySnapshot<DocumentData>>();
+  const [creatingComment, setCreatingComment] = createSignal(false);
 
   if (!isServer) {
     const loader = new Loader({
@@ -92,12 +112,17 @@ export default function Dashboard() {
       const m = new Map(document.getElementById('map') as HTMLElement, {
         center: { lat: 38.9543, lng: -95.2558 },
         zoom: 16,
+        mapTypeControl: false,
+        streetViewControl: false,
       });
       const p = new PlacesService(m);
       m.addListener(
         'click',
         async (e: google.maps.MapMouseEvent | google.maps.IconMouseEvent) => {
           if ('placeId' in e && e.placeId) {
+            // stop the default popup: https://stackoverflow.com/a/19084796/
+            e.stop();
+
             // get other info from placeId
             const details =
               await new Promise<google.maps.places.PlaceResult | null>(
@@ -113,6 +138,9 @@ export default function Dashboard() {
               latLng: e.latLng,
               icon: details?.icon,
               icon_background_color: details?.icon_background_color,
+              name: details?.name,
+              placePhotos:
+                details?.photos?.map((photo) => photo.getUrl()) ?? [],
             });
           }
         }
@@ -135,7 +163,6 @@ export default function Dashboard() {
       m.addListener('idle', async () => {
         const bounds = mapBounds();
         if (mapChanged() && !loading() && bounds) {
-          console.log(mapChanged());
           setLoading(true);
           const locations = collection(db, 'locations');
           const matchingLat = await getDocs(
@@ -208,6 +235,8 @@ export default function Dashboard() {
                   latLng: new google.maps.LatLng(latLngLiteral),
                   icon: value.icon,
                   icon_background_color: value.icon_background_color,
+                  name: value.name,
+                  placePhotos: value.placePhotos ?? [],
                 });
               });
               return marker;
@@ -224,7 +253,6 @@ export default function Dashboard() {
   createEffect(() => {
     const m = map();
     if (m) {
-      console.log(viewingMode());
       if (viewingMode() === 'viewing') {
         m.setOptions({ styles: styles.hide });
         markers().forEach((marker) => marker.setMap(m));
@@ -236,9 +264,22 @@ export default function Dashboard() {
   });
 
   const clear = () => {
-    setPlace({ placeId: null, latLng: null });
+    setPlace({ placeId: null, latLng: null, placePhotos: [] });
     setTag('');
     setTags([]);
+  };
+
+  const getComments = async (placeId: string | null) => {
+    if (!placeId) {
+      return;
+    }
+    const comments = collection(db, 'comments');
+    const comResult = await getDocs(
+      query(comments, where('placeId', '==', placeId))
+    );
+    if (comResult) {
+      setComments(comResult);
+    }
   };
 
   // Attempts to find the place on firestore
@@ -246,11 +287,12 @@ export default function Dashboard() {
     if (placeId === null) {
       return;
     }
-    const docRef = doc(db, 'locations', placeId);
-    const docSnap = await getDoc(docRef);
-    if (docSnap) {
-      setTags(docSnap.get('tags') ?? []);
+    const locations = doc(db, 'locations', placeId);
+    const locSnap = await getDoc(locations);
+    if (locSnap) {
+      setTags(locSnap.get('tags') ?? []);
     }
+    await getComments(placeId);
   };
 
   const onSubmit = async () => {
@@ -272,6 +314,8 @@ export default function Dashboard() {
       tags: tags(),
       icon: place().icon,
       icon_background_color: place().icon_background_color,
+      name: place().name,
+      placePhotos: place().placePhotos,
     });
 
     clear();
@@ -310,74 +354,184 @@ export default function Dashboard() {
             background-color: #fff;
           }
 
-          .modal {
-            position: absolute;
-            background-color: rgba(51, 51, 51, 0.25);
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-          }
-
-          .modal-section {
-            padding: 1rem;
-            background: #fff;
-          }
-
-          .modal-bottom {
+          .ul-tags {
+            all: unset;
             display: flex;
             flex-flow: row wrap;
-            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 24px;
+          }
+
+          .li-tag {
+            all: unset;
+            display: flex;
+            flex-flow: row nowrap;
+            gap: 4px;
+            border-radius: 12px;
+            background-color: #e62727;
+            color: #fff;
+            padding: 0.25rem 1rem;
+            font-size: 1.25rem;
+          }
+
+          .li-input {
+            background-color: unset;
+            padding: 0;
+          }
+
+          .input {
+            width: fit-content;
+            max-width: 240px;
+            font-size: 1.25rem;
+            padding-left: 8px;
+          }
+
+          .btn-icon {
+            all: unset;
+            border: unset;
+            font-size: 1.25rem;
+            background-color: inherit;
+            aspect-ratio: 1/1;
+            padding: 4px;
+            padding-right: 2px;
+            cursor: pointer;
+          }
+
+          .img-place {
+            display: flex;
+            max-height: 320px;
+          }
+
+          .inline-block {
+            display: inline-block;
+          }
+
+          .rating-span {
+            display: flex;
+            flex-flow: row nowrap;
+            gap: 16px;
+            align-items: center;
+          }
+
+          .rating-block {
+            display: block;
+            margin: 0;
+            padding: 16px 0px;
+          }
+
+          .rating-group {
+            display: flex;
+            gap: 8px;
+          }
+
+          .ul-comments {
+            all: unset;
+            display: flex;
+            flex-flow: column nowrap;
+            gap: 16px;
+          }
+
+          .li-comment {
+            all: unset;
+          }
+
+          .li-comment-empty {
+            all: unset;
+            align-self: center;
           }
         `}
       </style>
       <main>
-        <Show when={place().placeId}>
-          <div class="modal">
-            <section class="modal-section">
-              <h3>Editing place with placeId: ${place().placeId}</h3>
+        <Modal open={!!place().placeId} onClose={clear} onSubmit={onSubmit}>
+          <h3>{place().name ?? place().placeId}</h3>
+          <img
+            class="img-place"
+            src={
+              place().placePhotos[0]
+                ? `${place().placePhotos[0]}&maxheight=300&maxwidth=300`
+                : undefined
+            }
+            alt={place().name}
+          />
+          <span class="rating-span">
+            <h4 class="rating-block">Accessibility Rating</h4>
+            <span class="rating-block rating-group">
+              <span>
+                {((): string => {
+                  const totalRating =
+                    comments()?.docs.reduce(
+                      (p, c) => p + c.get('rating') ?? 3,
+                      0
+                    ) ?? 0;
+                  if (totalRating > 0) {
+                    return `${totalRating / comments()!.size} / 5 stars`;
+                  } else {
+                    return 'Unrated';
+                  }
+                })()}
+              </span>
+              <span role="separator">|</span>
+              <span>{comments()?.size ?? 0} Reviews</span>
+            </span>
+          </span>
+          <h4>Current tags</h4>
+          <ul class="ul-tags">
+            <For each={tags()}>
+              {(tag) => (
+                <li class="li-tag">
+                  {tag}
+                  <button
+                    class="btn-icon"
+                    aria-label={`Delete tag ${tag}`}
+                    onClick={() => {
+                      setTags(tags().filter((t) => t !== tag));
+                    }}
+                  >
+                    <ImCancelCircle />
+                  </button>
+                </li>
+              )}
+            </For>
+            <li class="li-tag li-input">
               <input
                 class="input"
                 aria-label="Tag"
                 placeholder="Tag"
                 value={tag()}
                 onChange={(e) => setTag(e.currentTarget.value)}
-              />
-              <Button
-                onClick={() => {
-                  setTags([...tags(), tag()]);
-                  setTag('');
+                onKeyUp={(e) => {
+                  if (e.key === 'Enter') {
+                    setTags([...tags(), tag()]);
+                    setTag('');
+                  }
                 }}
-              >
-                Add Tag
-              </Button>
-              <h4>Current tags</h4>
-              <ul>
-                <For each={tags()}>
-                  {(tag) => (
-                    <li>
-                      {tag}
-                      <Button
-                        aria-label={`Delete tag ${tag}`}
-                        onClick={() => {
-                          setTags(tags().filter((t) => t !== tag));
-                        }}
-                      >
-                        <ImCancelCircle />
-                      </Button>
-                    </li>
-                  )}
-                </For>
-              </ul>
-              <div class="modal-bottom">
-                <Button onClick={() => onSubmit()}>Save</Button>
-                <Button onClick={() => clear()}>Exit</Button>
-              </div>
-            </section>
-          </div>
-        </Show>
+                size={8}
+              />
+            </li>
+          </ul>
+          <h4>Comments</h4>
+          <ul class="ul-comments">
+            <For
+              each={comments()?.docs.filter((comment) =>
+                comment.get('description')
+              )}
+              fallback={<li class="li-comment-empty">No comments found</li>}
+            >
+              {(comment) => (
+                <li class="li-comment">{comment.get('description')}</li>
+              )}
+            </For>
+          </ul>
+          <button onClick={() => setCreatingComment(true)}>Add Comment</button>
+        </Modal>
+        <CreateCommentModal
+          open={creatingComment}
+          setOpen={setCreatingComment}
+          refetch={() => {
+            getComments(place().placeId);
+          }}
+          placeId={place().placeId}
+        />
         <section class="section navbar">
           <Button onClick={() => signOut()}>Sign Out</Button>
           <Button

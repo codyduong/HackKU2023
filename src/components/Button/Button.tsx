@@ -1,12 +1,14 @@
 import { JSX, splitProps } from 'solid-js';
+import { css } from 'solid-styled';
 
 type ButtonProps = JSX.HTMLElementTags['button'] & {
   icon?: JSX.Element;
   children: JSX.Element;
+  css?: ReturnType<typeof css>;
 };
 
 export default function Button(_props: ButtonProps): JSX.Element {
-  const [props, rest] = splitProps(_props, ['icon', 'children']);
+  const [props, rest] = splitProps(_props, ['icon', 'children', 'css']);
   return (
     <>
       <style jsx>
@@ -23,6 +25,7 @@ export default function Button(_props: ButtonProps): JSX.Element {
           }
         `}
       </style>
+      {props.css}
       <button {...rest}>
         {props.icon}
         {props.children}
