@@ -98,7 +98,6 @@ export default function Categories() {
         <section>
           <h2>Enter your location:</h2>
         </section>
-
       </main>
     </>
   );
