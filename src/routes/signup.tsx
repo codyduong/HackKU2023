@@ -11,6 +11,7 @@ export default function SignUp() {
   const [password, setPassword] = createSignal('');
   const [confirmPassword, setConfirmPassword] = createSignal('');
   const [result, setResult] = createSignal<UserCredential>();
+  const [error, setError] = createSignal('');
 
   createEffect(() => {
     console.log(email(), password());

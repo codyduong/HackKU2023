@@ -1,12 +1,13 @@
 import { JSX, Show } from 'solid-js';
 import { VsClose } from 'solid-icons/vs';
 import Button from '../Button';
+import { Portal } from 'solid-js/web';
 
 interface ModalProps {
   children: JSX.Element;
   open: boolean;
   onClose: () => void;
-  onSubmit: null | (() => void);
+  onSubmit: null | (() => void) | JSX.Element;
   zIndex?: number;
 }
 
@@ -34,6 +35,8 @@ export default function Modal(props: ModalProps) {
             background: #fff;
             border-radius: 16px;
             z-index: ${props.zIndex ?? 2000};
+            max-height: 100vh;
+            overflow-y: scroll;
           }
 
           section {
@@ -98,26 +101,36 @@ export default function Modal(props: ModalProps) {
         `}
       </style>
       <Show when={props.open}>
-        <div class="modal" onClick={(e) => e.stopPropagation()}>
-          <div class="modal shadow" onClick={() => props.onClose()} />
-          <div class="modal-inner">
-            <h2 class="modal-heading">
-              <button
-                class="modal-btn"
-                aria-label="Close modal"
-                onClick={() => props.onClose()}
+        <Portal mount={document.getElementById('modal-root')!}>
+          <div class="modal" onClick={(e) => e.stopPropagation()}>
+            <div class="modal shadow" onClick={() => props.onClose()} />
+            <div class="modal-inner">
+              <h2 class="modal-heading">
+                <button
+                  class="modal-btn"
+                  aria-label="Close modal"
+                  onClick={() => props.onClose()}
+                >
+                  <VsClose />
+                </button>
+              </h2>
+              <section>{props.children}</section>
+              <Show when={typeof props.onSubmit === 'function'}>
+                <div class="modal-footer">
+                  <Button onClick={() => (props.onSubmit as any)()}>
+                    Save
+                  </Button>
+                </div>
+              </Show>
+              <Show
+                when={props.onSubmit && !(typeof props.onSubmit === 'function')}
               >
-                <VsClose />
-              </button>
-            </h2>
-            <section>{props.children}</section>
-            <Show when={props.onSubmit}>
-              <div class="modal-footer">
-                <Button onClick={() => props.onSubmit()}>Save</Button>
-              </div>
-            </Show>
+                {/* @ts-expect-error: TODO */}
+                {props.onSubmit}
+              </Show>
+            </div>
           </div>
-        </div>
+        </Portal>
       </Show>
     </>
   );

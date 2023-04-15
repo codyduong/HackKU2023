@@ -74,6 +74,16 @@ export default function Root() {
             />
           </Head>
           <Body>
+            <style jsx>
+              {`
+                .modal-root {
+                  width: 100vw;
+                  height: 100vh;
+                  position: absolute;
+                }
+              `}
+            </style>
+            <div id="modal-root" />
             <GlobalStyles />
             <Suspense>
               <ErrorBoundary>

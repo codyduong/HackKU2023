@@ -29,11 +29,13 @@ export default function CreateCommentModal(props: CreateCommentModalProps) {
         placeId: props.placeId,
         description: description(),
         rating: min(max(rating())),
-        author: user()?.email,
+        author: user()?.uid,
+        authorEmail: user()?.email,
+        authorIcon: user()?.photoURL,
       });
       props.refetch();
+      props.setOpen(false);
     } catch (e) {
-      console.log(user()?.email);
       console.warn(e);
     }
   };
@@ -71,6 +73,7 @@ export default function CreateCommentModal(props: CreateCommentModalProps) {
           onSubmit={() => submitComment()}
           zIndex={2500}
         >
+          <h3>Creating Comment</h3>
           <label for="comment-rating-input">Rating</label>
           <input
             id="comment-rating-input"
