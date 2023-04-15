@@ -451,7 +451,14 @@ export default function Dashboard() {
                 })()}
               </span>
               <span role="separator">|</span>
-              <span>{comments()?.size ?? 0} Reviews</span>
+              <span>
+                {`${
+                  comments()?.docs.filter(
+                    (comment) => comment.get('rating') !== null
+                  ) ?? [].length
+                }`}{' '}
+                Ratings
+              </span>
             </span>
           </span>
           <h4>Current tags</h4>
@@ -489,7 +496,7 @@ export default function Dashboard() {
               />
             </li>
           </ul>
-          <h4>Comments</h4>
+          <h4>{comments()?.size} Comments</h4>
           <Comments
             comments={comments()}
             refetch={() => {
