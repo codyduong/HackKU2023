@@ -3,7 +3,11 @@ import { css } from 'solid-styled';
 import Counter from '~/components/Counter';
 
 export default function Home() {
-  css``;
+  css`
+    .chip {
+      display: flex;
+    }
+  `;
 
   return (
     <main>
