@@ -19,6 +19,7 @@ export default function Button(_props: ButtonProps): JSX.Element {
             border: solid #333 2px;
             cursor: pointer;
             width: fit-content;
+            user-select: none;
           }
         `}
       </style>
