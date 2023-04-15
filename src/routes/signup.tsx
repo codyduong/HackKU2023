@@ -3,7 +3,7 @@ import { Title } from 'solid-start';
 import Button from '~/components/Button';
 import { createUserWithEmailAndPassword, UserCredential } from 'firebase/auth';
 import { auth } from '~/auth';
-import Cats from './pinterest';
+import Cats from '~/components/Cats';
 // import Cats from '~/components/Button/pinterest';
 
 export default function SignUp() {
@@ -11,6 +11,7 @@ export default function SignUp() {
   const [password, setPassword] = createSignal('');
   const [confirmPassword, setConfirmPassword] = createSignal('');
   const [result, setResult] = createSignal<UserCredential>();
+  const [error, setError] = createSignal('');
 
   createEffect(() => {
     console.log(email(), password());

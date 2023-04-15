@@ -18,6 +18,7 @@ import {
 import { db } from '~/auth';
 import { ImCancelCircle } from 'solid-icons/im';
 import Modal, { CreateCommentModal } from '~/components/Modal';
+import Comments from '~/components/Comments';
 
 type SelectPlaceDetails = Pick<
   google.maps.places.PlaceResult,
@@ -38,16 +39,6 @@ export type PlaceFirestore = {
     | null
     | (string | { tag: string; description?: string; link?: string })[];
 } & SelectPlaceDetails;
-
-export type CommentFirestore = {
-  author: string;
-  authorId: string;
-  comment: string;
-};
-
-export type CommentsFirestore = {
-  comments: [];
-};
 
 const styles: Record<string, google.maps.MapTypeStyle[]> = {
   default: [],
@@ -423,22 +414,6 @@ export default function Dashboard() {
             display: flex;
             gap: 8px;
           }
-
-          .ul-comments {
-            all: unset;
-            display: flex;
-            flex-flow: column nowrap;
-            gap: 16px;
-          }
-
-          .li-comment {
-            all: unset;
-          }
-
-          .li-comment-empty {
-            all: unset;
-            align-self: center;
-          }
         `}
       </style>
       <main>
@@ -464,7 +439,9 @@ export default function Dashboard() {
                       0
                     ) ?? 0;
                   if (totalRating > 0) {
-                    return `${totalRating / comments()!.size} / 5 stars`;
+                    return `${(totalRating / comments()!.size).toFixed(
+                      2
+                    )} / 5 stars`;
                   } else {
                     return 'Unrated';
                   }
@@ -510,18 +487,12 @@ export default function Dashboard() {
             </li>
           </ul>
           <h4>Comments</h4>
-          <ul class="ul-comments">
-            <For
-              each={comments()?.docs.filter((comment) =>
-                comment.get('description')
-              )}
-              fallback={<li class="li-comment-empty">No comments found</li>}
-            >
-              {(comment) => (
-                <li class="li-comment">{comment.get('description')}</li>
-              )}
-            </For>
-          </ul>
+          <Comments
+            comments={comments()}
+            refetch={() => {
+              getComments(place().placeId);
+            }}
+          />
           <button onClick={() => setCreatingComment(true)}>Add Comment</button>
         </Modal>
         <CreateCommentModal
