@@ -11,27 +11,82 @@ import {
   Scripts,
   Title,
 } from 'solid-start';
-import './root.css';
 import '@fontsource/atkinson-hyperlegible';
+import { css, renderSheets, StyleRegistry, type StyleData } from 'solid-styled';
+import { useAssets } from 'solid-js/web';
+
+function GlobalStyles() {
+  css`
+    @global {
+      body {
+        font-family: 'Atkinson Hyperlegible', Gordita, Roboto, Oxygen, Ubuntu,
+          Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        margin: 0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      a {
+        margin-right: 1rem;
+      }
+
+      main {
+        display: flex;
+        flex-flow: column nowrap;
+        width: 100vw;
+        height: 100vh;
+        align-items: center;
+        padding: 4rem;
+      }
+
+      p {
+        max-width: 14rem;
+        line-height: 1.35;
+      }
+
+      input {
+        font-size: 1.5rem;
+        border-radius: 8px;
+      }
+
+      button {
+        all: unset;
+        font-size: 1.5rem;
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: solid #333 2px;
+      }
+    }
+  `;
+  return null;
+}
 
 export default function Root() {
+  const sheets: StyleData[] = [];
+  useAssets(() => renderSheets(sheets));
+
   return (
-    <Html lang="en">
-      <Head>
-        <Title>SolidStart - Bare</Title>
-        <Meta charset="utf-8" />
-        <Meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
-      <Body>
-        <Suspense>
-          <ErrorBoundary>
-            <Routes>
-              <FileRoutes />
-            </Routes>
-          </ErrorBoundary>
-        </Suspense>
-        <Scripts />
-      </Body>
-    </Html>
+    <StyleRegistry styles={sheets}>
+      <Html lang="en">
+        <Head>
+          <Title>SolidStart - Bare</Title>
+          <Meta charset="utf-8" />
+          <Meta name="viewport" content="width=device-width, initial-scale=1" />
+        </Head>
+        <Body>
+          <GlobalStyles />
+          <Suspense>
+            <ErrorBoundary>
+              <Routes>
+                <FileRoutes />
+              </Routes>
+            </ErrorBoundary>
+          </Suspense>
+          <Scripts />
+        </Body>
+      </Html>
+    </StyleRegistry>
   );
 }
