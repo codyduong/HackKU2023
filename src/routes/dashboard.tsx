@@ -464,7 +464,9 @@ export default function Dashboard() {
                       0
                     ) ?? 0;
                   if (totalRating > 0) {
-                    return `${totalRating / comments()!.size} / 5 stars`;
+                    return `${(totalRating / comments()!.size).toFixed(
+                      2
+                    )} / 5 stars`;
                   } else {
                     return 'Unrated';
                   }

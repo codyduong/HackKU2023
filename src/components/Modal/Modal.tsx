@@ -6,7 +6,7 @@ interface ModalProps {
   children: JSX.Element;
   open: boolean;
   onClose: () => void;
-  onSubmit: () => void;
+  onSubmit: null | (() => void);
   zIndex?: number;
 }
 
@@ -111,9 +111,11 @@ export default function Modal(props: ModalProps) {
               </button>
             </h2>
             <section>{props.children}</section>
-            <div class="modal-footer">
-              <Button onClick={() => props.onSubmit()}>Save</Button>
-            </div>
+            <Show when={props.onSubmit}>
+              <div class="modal-footer">
+                <Button onClick={() => props.onSubmit()}>Save</Button>
+              </div>
+            </Show>
           </div>
         </div>
       </Show>
