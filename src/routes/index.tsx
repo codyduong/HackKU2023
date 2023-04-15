@@ -1,13 +1,6 @@
 import { Title } from 'solid-start';
-import { css } from 'solid-styled';
 
 export default function Home() {
-  css`
-    .chip {
-      display: flex;
-    }
-  `;
-
   return (
     <main>
       <Title>Hello World</Title>

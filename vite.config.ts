@@ -12,13 +12,13 @@ export default defineConfig({
         exclude: 'node_modules/**/*.{ts,js}',
       },
     }),
-    Unfonts({
-      google: {
-        families: ['Atkinson Hyperlegible '],
-      },
-      fontsource: {
-        families: ['Atkinson Hyperlegible'],
-      },
-    }),
+    // Unfonts({
+    //   google: {
+    //     families: ['Atkinson Hyperlegible '],
+    //   },
+    //   fontsource: {
+    //     families: ['Atkinson Hyperlegible'],
+    //   },
+    // }),
   ],
 });
