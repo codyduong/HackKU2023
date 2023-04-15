@@ -4,11 +4,13 @@ import Button from '~/components/Button';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '~/auth';
 import { useUser } from '~/context/User';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
 export default function Login() {
   const [username, setUsername] = createSignal('');
   const [password, setPassword] = createSignal('');
   const [user, { setUser }] = useUser();
+  const provider = new GoogleAuthProvider();
 
   createEffect(() => {
     console.log(username(), password());
@@ -21,6 +23,15 @@ export default function Login() {
         username(),
         password()
       );
+      setUser(result.user);
+    } catch (e) {
+      console.warn(e);
+    }
+  };
+
+  const onGoogle = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
       setUser(result.user);
     } catch (e) {
       console.warn(e);
@@ -119,8 +130,7 @@ export default function Login() {
           <span class="or">or</span>
         </section>
         <section class="section signup-providers">
-          {/* <Button>Google</Button> */}
-          <Button>Google</Button>
+          <Button onClick={() => onGoogle()}>Sign in with Google</Button>
         </section>
         <section class="section signup">
           <span>
