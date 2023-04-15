@@ -34,6 +34,8 @@
     "@solidjs/meta": "^0.28.2",
     "@solidjs/router": "^0.8.2",
     "@types/google.maps": "^3.52.5",
+    "firebase": "^9.19.1",
+    "solid-icons": "^1.0.4",
     "solid-js": "^1.7.2",
     "solid-start": "^0.2.26",
     "solid-styled": "^0.8.1",

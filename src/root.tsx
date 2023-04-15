@@ -14,6 +14,8 @@ import {
 import '@fontsource/atkinson-hyperlegible';
 import { css, renderSheets, StyleRegistry, type StyleData } from 'solid-styled';
 import { useAssets } from 'solid-js/web';
+import { UserProvider } from './context/User';
+import { auth } from './auth';
 
 function GlobalStyles() {
   css`
@@ -50,14 +52,6 @@ function GlobalStyles() {
         font-size: 1.5rem;
         border-radius: 8px;
       }
-
-      button {
-        all: unset;
-        font-size: 1.5rem;
-        padding: 8px 16px;
-        border-radius: 8px;
-        border: solid #333 2px;
-      }
     }
   `;
   return null;
@@ -69,24 +63,29 @@ export default function Root() {
 
   return (
     <StyleRegistry styles={sheets}>
-      <Html lang="en">
-        <Head>
-          <Title>SolidStart - Bare</Title>
-          <Meta charset="utf-8" />
-          <Meta name="viewport" content="width=device-width, initial-scale=1" />
-        </Head>
-        <Body>
-          <GlobalStyles />
-          <Suspense>
-            <ErrorBoundary>
-              <Routes>
-                <FileRoutes />
-              </Routes>
-            </ErrorBoundary>
-          </Suspense>
-          <Scripts />
-        </Body>
-      </Html>
+      <UserProvider auth={auth}>
+        <Html lang="en">
+          <Head>
+            <Title>SolidStart - Bare</Title>
+            <Meta charset="utf-8" />
+            <Meta
+              name="viewport"
+              content="width=device-width, initial-scale=1"
+            />
+          </Head>
+          <Body>
+            <GlobalStyles />
+            <Suspense>
+              <ErrorBoundary>
+                <Routes>
+                  <FileRoutes />
+                </Routes>
+              </ErrorBoundary>
+            </Suspense>
+            <Scripts />
+          </Body>
+        </Html>
+      </UserProvider>
     </StyleRegistry>
   );
 }
