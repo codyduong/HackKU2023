@@ -1,17 +1,16 @@
-name: frontend/web
+name: lint
 
 on:
   workflow_dispatch:
   push:
     branches: [ master ]
     paths:
-      - 'frontend/web/**'
+      - '**.ts'
+      - '**.tsx'
+      - '**.js'
+      - '.github/workflows/lint.yml'
   pull_request:
     branches: [ master ]
-
-defaults:
-  run:
-    working-directory: frontend/web
 
 jobs:
   lint:
@@ -34,6 +33,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
-        cache-dependency-path: 'frontend/web/yarn.lock'
+        cache-dependency-path: 'yarn.lock'
     - run: yarn ci
     - run: yarn lint:changed
