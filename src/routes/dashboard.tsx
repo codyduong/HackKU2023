@@ -433,13 +433,16 @@ export default function Dashboard() {
             <span class="rating-block rating-group">
               <span>
                 {((): string => {
-                  const totalRating =
-                    comments()?.docs.reduce(
-                      (p, c) => p + c.get('rating') ?? 3,
-                      0
-                    ) ?? 0;
-                  if (totalRating > 0) {
-                    return `${(totalRating / comments()!.size).toFixed(
+                  const validRatings =
+                    comments()?.docs.filter(
+                      (comment) => comment.get('rating') !== null
+                    ) ?? [];
+                  const totalRating = validRatings.reduce(
+                    (p, c) => p + c.get('rating') ?? 0,
+                    0
+                  );
+                  if (validRatings.length > 0) {
+                    return `${(totalRating / validRatings.length).toFixed(
                       2
                     )} / 5 stars`;
                   } else {
@@ -448,7 +451,14 @@ export default function Dashboard() {
                 })()}
               </span>
               <span role="separator">|</span>
-              <span>{comments()?.size ?? 0} Reviews</span>
+              <span>
+                {`${
+                  comments()?.docs.filter(
+                    (comment) => comment.get('rating') !== null
+                  ) ?? [].length
+                }`}{' '}
+                Ratings
+              </span>
             </span>
           </span>
           <h4>Current tags</h4>
@@ -486,7 +496,7 @@ export default function Dashboard() {
               />
             </li>
           </ul>
-          <h4>Comments</h4>
+          <h4>{comments()?.size} Comments</h4>
           <Comments
             comments={comments()}
             refetch={() => {
