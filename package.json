@@ -10,6 +10,8 @@
   },
   "type": "module",
   "devDependencies": {
+    "@types/babel__core": "^7.20.0",
+    "@types/debug": "^4.1.7",
     "@types/node": "^18.11.18",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
@@ -22,8 +24,6 @@
     "prettier": "^2.8.7",
     "solid-start-node": "^0.2.19",
     "typescript": "^4.9.4",
-    "@types/debug": "^4.1.7",
-    "@types/babel__core": "^7.20.0",
     "unplugin-fonts": "^1.0.3",
     "vite": "^4.1.4",
     "vite-plugin-solid-styled": "^0.8.1"
@@ -32,6 +32,8 @@
     "@fontsource/atkinson-hyperlegible": "^4.5.11",
     "@solidjs/meta": "^0.28.2",
     "@solidjs/router": "^0.8.2",
+    "firebase": "^9.19.1",
+    "solid-icons": "^1.0.4",
     "solid-js": "^1.7.2",
     "solid-start": "^0.2.26",
     "solid-styled": "^0.8.1",

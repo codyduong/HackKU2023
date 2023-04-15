@@ -1,27 +1,25 @@
-import { createEffect, createSignal, Show } from 'solid-js';
-import { Navigate, Title } from 'solid-start';
+import { createEffect, createSignal } from 'solid-js';
+import { Title } from 'solid-start';
 import Button from '~/components/Button';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, UserCredential } from 'firebase/auth';
 import { auth } from '~/auth';
-import { useUser } from '~/context/User';
 
-export default function Login() {
-  const [username, setUsername] = createSignal('');
+export default function SignUp() {
+  const [email, setEmail] = createSignal('');
   const [password, setPassword] = createSignal('');
-  const [user, { setUser }] = useUser();
+  const [confirmPassword, setConfirmPassword] = createSignal('');
+  const [result, setResult] = createSignal<UserCredential>();
 
   createEffect(() => {
-    console.log(username(), password());
+    console.log(email(), password());
   });
 
   const onSubmit = async () => {
     try {
-      const result = await signInWithEmailAndPassword(
-        auth,
-        username(),
-        password()
+      setResult(
+        await createUserWithEmailAndPassword(auth, email(), password())
       );
-      setUser(result.user);
+      console.log(result());
     } catch (e) {
       console.warn(e);
     }
@@ -29,10 +27,7 @@ export default function Login() {
 
   return (
     <>
-      <Show when={user()}>
-        <Navigate href="/dashboard" />
-      </Show>
-      <Title>Login</Title>
+      <Title>Sign Up</Title>
       <style jsx>
         {`
           h1 {
@@ -62,7 +57,6 @@ export default function Login() {
             flex-flow: row nowrap;
             justify-content: center;
             border-color: #333333;
-            margin: 2rem 0 0.5rem;
           }
 
           .or {
@@ -99,10 +93,10 @@ export default function Login() {
           <form class="form">
             <input
               class="input"
-              aria-label="Username"
-              placeholder="Username"
-              value={username()}
-              onChange={(e) => setUsername(e.currentTarget.value)}
+              aria-label="Email"
+              placeholder="Email"
+              value={email()}
+              onChange={(e) => setEmail(e.currentTarget.value)}
             />
             <input
               class="input"
@@ -112,21 +106,22 @@ export default function Login() {
               value={password()}
               onChange={(e) => setPassword(e.currentTarget.value)}
             />
+            <input
+              class="input"
+              aria-label="Confirm Password"
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword()}
+              onChange={(e) => setConfirmPassword(e.currentTarget.value)}
+            />
           </form>
-          <Button onClick={() => onSubmit()}>Sign In</Button>
-        </section>
-        <section class="section divider" role="separator">
-          <span class="or">or</span>
-        </section>
-        <section class="section signup-providers">
-          {/* <Button>Google</Button> */}
-          <Button>Google</Button>
+          <Button onClick={() => onSubmit()}>Sign Up</Button>
         </section>
         <section class="section signup">
           <span>
-            Don't have an account?{' '}
-            <a href="/signup" class="anchor-signup">
-              Sign up
+            Already have an account?{' '}
+            <a href="/login" class="anchor-login">
+              Log in
             </a>
           </span>
         </section>
