@@ -1,17 +1,16 @@
-import { Title } from 'solid-start';
+import { Show } from 'solid-js';
+import { Navigate, Title } from 'solid-start';
+import { useUser } from '~/context/User';
 
 export default function Home() {
+  const [user] = useUser();
+
   return (
-    <main>
-      <Title>Hello World</Title>
-      <h1>Hello world!</h1>
-      <p>
-        Visit{' '}
-        <a href="https://start.solidjs.com" target="_blank">
-          start.solidjs.com
-        </a>{' '}
-        to learn how to build SolidStart apps.
-      </p>
-    </main>
+    <>
+      <Title>Loading - B2B</Title>
+      <Show when={user} fallback={<Navigate href={'/login'} />}>
+        <Navigate href="/dashboard" />
+      </Show>
+    </>
   );
 }

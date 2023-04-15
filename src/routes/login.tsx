@@ -32,7 +32,7 @@ export default function Login() {
       <Show when={user()}>
         <Navigate href="/dashboard" />
       </Show>
-      <Title>Login</Title>
+      <Title>Login - B2B</Title>
       <style jsx>
         {`
           h1 {
