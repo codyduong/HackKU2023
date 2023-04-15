@@ -12,15 +12,20 @@ interface CreateCommentModalProps {
 }
 
 export default function CreateCommentModal(props: CreateCommentModalProps) {
-  const [rating, setRating] = createSignal(3);
+  const [rating, setRating] = createSignal<number | null>(null);
   const [description, setDescription] = createSignal('');
   const [user] = useUser();
 
-  const min = (n: number) => {
-    return n < 0 ? 0 : n;
+  const min = (n: number | null) => {
+    return n !== null ? (n < 0 ? 0 : n) : null;
   };
-  const max = (n: number) => {
-    return n > 5 ? 5 : n;
+  const max = (n: number | null) => {
+    return n !== null ? (n > 5 ? 5 : n) : null;
+  };
+
+  const cleanData = () => {
+    setRating(null);
+    setDescription('');
   };
 
   const submitComment = async () => {
@@ -33,6 +38,7 @@ export default function CreateCommentModal(props: CreateCommentModalProps) {
         authorEmail: user()?.email,
         authorIcon: user()?.photoURL,
       });
+      cleanData();
       props.refetch();
       props.setOpen(false);
     } catch (e) {
@@ -81,7 +87,7 @@ export default function CreateCommentModal(props: CreateCommentModalProps) {
             type="number"
             min={0}
             max={5}
-            value={min(max(rating()))}
+            value={min(max(rating())) ?? ''}
             onChange={(e) => setRating(Number(e.currentTarget.value))}
             size={1}
           />

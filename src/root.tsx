@@ -43,11 +43,6 @@ function GlobalStyles() {
         padding: 4rem;
       }
 
-      p {
-        max-width: 14rem;
-        line-height: 1.35;
-      }
-
       input {
         font-size: 1.5rem;
         border-radius: 8px;
