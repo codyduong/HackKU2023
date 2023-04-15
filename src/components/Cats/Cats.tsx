@@ -1,24 +1,55 @@
-import { Component, createSignal, Show } from 'solid-js';
-import { Title } from 'solid-start';
+import { Component, createSignal, Show, For } from 'solid-js';
+import { Navigate, Title } from 'solid-start';
+import Button from '../Button';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '~/auth';
 
-const [religion, setReligion] = createSignal(false);
-const [healthcare, setHealthcare] = createSignal(false);
-const [education, setEducation] = createSignal(false);
-const [food, setFood] = createSignal(false);
-const [neighborhoods, setNeighborhoods] = createSignal(false);
-const [employment, setEmployment] = createSignal(false);
-const toggleRel = () => setReligion(!religion());
-const toggleHealth = () => setHealthcare(!healthcare());
-const toggleEdu = () => setEducation(!education());
-const toggleFood = () => setFood(!food());
-const toggleNeighbor = () => setNeighborhoods(!neighborhoods());
-const toggleEmploy = () => setEmployment(!employment());
+type Category =
+  | 'religion'
+  | 'healthcare'
+  | 'education'
+  | 'bikes'
+  | 'food'
+  | 'employment';
 
+const categories: [Category, boolean][] = [
+  ['religion', false],
+  ['healthcare', false],
+  ['education', false],
+  ['bikes', false],
+  ['food', false],
+  ['employment', false],
+];
+
+const [cats, setCats] = createSignal(categories);
 const [location, setLocation] = createSignal('');
+
+const toggleCat = (cat: Category) => {
+  const temp = Object.fromEntries(cats());
+  temp[cat] = !temp[cat];
+  setCats(Object.entries(temp) as any);
+};
+
+const submitAccount = async () => {
+  const tags: Category[] = [];
+  cats().forEach(([t, v]) => {
+    if (v) {
+      tags.push(t);
+    }
+  });
+  await setDoc(doc(db, 'users', auth.currentUser!.uid), {
+    // hasSetup: true,
+    interestedTags: tags,
+    location: '',
+  });
+};
 
 const Cats: Component = () => {
   return (
     <>
+      <Show when={!auth.currentUser}>
+        <Navigate href="/signup" />
+      </Show>
       <Title>Categories</Title>
       <style jsx>
         {`
@@ -39,15 +70,47 @@ const Cats: Component = () => {
             display: flex;
             flex-flow: row wrap;
             gap: 16px;
+            margin-bottom: 32px;
           }
           .form {
             display: flex;
             flex-flow: column nowrap;
             gap: 16px;
+            margin-bottom: 2rem;
           }
           .next {
-            margin-top: 0;
-            font-size: 2rem;
+            margin: 1rem 0 2rem;
+          }
+          .btn-cat {
+            all: unset;
+            display: flex;
+            flex-flow: row nowrap;
+            gap: 4px;
+            border-radius: 12px;
+            border: 2px solid #333;
+            padding: 0.25rem 1rem;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: background-color 225ms;
+            user-select: none;
+          }
+          .btn-cat:hover {
+            background-color: #acacac;
+          }
+          .active {
+            background-color: #64eb6f;
+            border: 2px solid #12831b;
+          }
+          .active:hover {
+            background-color: #36ce43;
+          }
+          .section {
+            display: flex;
+            flex-flow: column nowrap;
+            gap: 16px;
+            width: fit-content;
+            padding-bottom: 2rem;
+            align-items: center;
           }
         `}
       </style>
@@ -57,68 +120,40 @@ const Cats: Component = () => {
           <h2>Select which categories you are interested in.</h2>
         </section>
         <section class="buttons">
-          <Show
-            when={religion()}
-            fallback={<button onClick={toggleRel}>Religion</button>}
-          >
-            <button onClick={toggleRel}>
-              <div>Religion</div>
-            </button>
-          </Show>
-          <Show
-            when={healthcare()}
-            fallback={<button onClick={toggleHealth}>Healthcare</button>}
-          >
-            <button onClick={toggleHealth}>
-              <div>Healthcare</div>
-            </button>
-          </Show>
-          <Show
-            when={education()}
-            fallback={<button onClick={toggleEdu}>Education</button>}
-          >
-            <button onClick={toggleEdu}>
-              <div>Education</div>
-            </button>
-          </Show>
-          <Show
-            when={food()}
-            fallback={<button onClick={toggleFood}>Food</button>}
-          >
-            <button onClick={toggleFood}>
-              <div>Food</div>
-            </button>
-          </Show>
-          <Show
-            when={neighborhoods()}
-            fallback={<button onClick={toggleNeighbor}>Neighborhoods</button>}
-          >
-            <button onClick={toggleNeighbor}>
-              <div>Neighborhoods</div>
-            </button>
-          </Show>
-          <Show
-            when={employment()}
-            fallback={<button onClick={toggleEmploy}>Employment</button>}
-          >
-            <button onClick={toggleEmploy}>
-              <div>Employment</div>
-            </button>
-          </Show>
+          <For each={cats()}>
+            {([cat, v]) => {
+              return (
+                <button
+                  onClick={() => toggleCat(cat as any)}
+                  class={`btn-cat${v ? ' active' : ''}`}
+                >
+                  {cat}
+                </button>
+              );
+            }}
+          </For>
         </section>
         <section>
-          <h2>Enter your location:</h2>
           <form class="form">
+            <label for="input-location">Location</label>
             <input
+              id="input-location"
               class="input"
-              placeholder="City, State, Country "
+              placeholder="City, State, Country"
               value={location()}
               onChange={(e) => setLocation(e.currentTarget.value)}
             />
           </form>
         </section>
         <section class="next">
-          <button>Next</button>
+          <Button onClick={() => submitAccount()}>Submit</Button>
+        </section>
+        <section class="section signup">
+          <span>
+            <a href="/dashboard" class="anchor-signup">
+              Skip this step for now
+            </a>
+          </span>
         </section>
       </main>
     </>

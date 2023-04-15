@@ -60,6 +60,7 @@ export default function Modal(props: ModalProps) {
             border-radius: 50%;
             cursor: pointer;
             transition: background-color 225ms;
+            user-select: none;
           }
           .modal-btn:hover {
             background-color: #bbb;
@@ -97,6 +98,7 @@ export default function Modal(props: ModalProps) {
             padding: 4px;
             padding-right: 2px;
             cursor: pointer;
+            user-select: none;
           }
         `}
       </style>

@@ -23,6 +23,9 @@ export default function Button(_props: ButtonProps): JSX.Element {
             width: fit-content;
             user-select: none;
           }
+          button:hover {
+            background-color: #acacac;
+          }
         `}
       </style>
       {props.css}
