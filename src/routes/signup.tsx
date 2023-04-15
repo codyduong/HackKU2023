@@ -11,10 +11,14 @@ export default function SignUp() {
   const [result, setResult] = createSignal<UserCredential>();
 
   createEffect(() => {
-    console.log(email(), password());
+    console.log(email(), password(), confirmPassword());
   });
-
+  
   const onSubmit = async () => {
+    if (password() !== confirmPassword()) {
+      alert('Passwords do not match!');
+      return;
+    }
     try {
       setResult(
         await createUserWithEmailAndPassword(auth, email(), password())
@@ -129,3 +133,4 @@ export default function SignUp() {
     </>
   );
 }
+
