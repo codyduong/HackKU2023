@@ -46,22 +46,16 @@ export default function Login() {
       <Title>Login - B2B</Title>
       <style jsx>
         {`
-          h1 {
-            width: fit-content;
-            color: #335d92;
-            text-transform: uppercase;
-            font-size: 3rem;
-          }
 
           h2 {
             margin-top: 0;
-            font-size: 2rem;
+            font-size: 1.5rem;
           }
 
           .section {
             display: flex;
             flex-flow: column nowrap;
-            gap: 16px;
+            gap: 15px;
             width: fit-content;
             padding-bottom: 2rem;
             align-items: center;
@@ -73,7 +67,7 @@ export default function Login() {
             flex-flow: row nowrap;
             justify-content: center;
             border-color: #333333;
-            margin: 2rem 0 0.5rem;
+            margin: 0.5rem 0.5rem 0.5rem;
           }
 
           .or {
@@ -85,10 +79,19 @@ export default function Login() {
             text-transform: uppercase;
           }
 
-          .form {
-            display: flex;
-            flex-flow: column nowrap;
-            gap: 16px;
+          .form input {
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 10px;
+            font-size: 20px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+          }
+          
+          .form input:focus {
+            outline: none;
+            border-color: #ff847c;
           }
 
           .signup-providers {
@@ -101,11 +104,49 @@ export default function Login() {
             color: #335d92;
             cursor: pointer;
           }
+          img {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: 200px;
+          }
+          .btn-signin {
+            display: inline-block;
+            color: #ff847c;
+            cursor: pointer;
+            background-color: #fff;
+            border: 2px solid #ff847c;
+            border-radius: 0.25rem;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease-in-out;
+          }
+          
+          .btn-signin:hover {
+            background-color: #ff847c;
+            color: #fff;
+          }
+          .google-signin {
+            display: inline-block;
+            color: #ff847c;
+            cursor: pointer;
+            background-color: #fff;
+            border: 2px solid #ff847c;
+            border-radius: 0.25rem;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease-in-out;
+            margin-top: 100px;
+
+          }
+          
+          .google-signin:hover {
+            background-color: #ff847c;
+            color: #fff;
+          }
         `}
       </style>
       <main>
         <section class="section login">
-          <h1>Bridge to Belonging</h1>
+        <img src="src/components/img/logo2.png"></img>
           <h2>Login</h2>
           <form class="form">
             <input
@@ -124,13 +165,13 @@ export default function Login() {
               onChange={(e) => setPassword(e.currentTarget.value)}
             />
           </form>
-          <Button onClick={() => onSubmit()}>Sign In</Button>
-        </section>
+          <Button onClick={() => onSubmit()} class="btn-signin">Sign In</Button>
+</section>
         <section class="section divider" role="separator">
           <span class="or">or</span>
         </section>
         <section class="section signup-providers">
-          <Button onClick={() => onGoogle()}>Sign in with Google</Button>
+          <Button onClick={() => onGoogle()} class="google-signin">Sign in with Google</Button>
         </section>
         <section class="section signup">
           <span>
