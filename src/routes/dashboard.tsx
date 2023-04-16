@@ -499,7 +499,6 @@ export default function Dashboard() {
               />
             </li>
           </ul>
-          <h4>{comments()?.size} Comments</h4>
           <Comments
             comments={comments()}
             refetch={() => {
