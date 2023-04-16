@@ -42,7 +42,7 @@ export default function SignUp() {
 
           h2 {
             margin-top: 0;
-            font-size: 2rem;
+            font-size: 1.5rem;
           }
 
           .section {
@@ -71,10 +71,19 @@ export default function SignUp() {
             text-transform: uppercase;
           }
 
-          .form {
-            display: flex;
-            flex-flow: column nowrap;
-            gap: 16px;
+          .form input {
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 10px;
+            font-size: 20px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+          }
+          
+          .form input:focus {
+            outline: none;
+            border-color: #ff847c;
           }
 
           .signup-providers {
@@ -87,13 +96,34 @@ export default function SignUp() {
             color: #335d92;
             cursor: pointer;
           }
+          img {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: 200px;
+          }
+          .btn-signup {
+            display: inline-block;
+            color: #ff847c;
+            cursor: pointer;
+            background-color: #fff;
+            border: 2px solid #ff847c;
+            border-radius: 0.25rem;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease-in-out;
+          }
+          
+          .btn-signup:hover {
+            background-color: #ff847c;
+            color: #fff;
+          }
         `}
       </style>
       <Show when={!result()} fallback={<Cats />}>
         <main>
           <section class="section login">
-            <h1>Bridge to Belonging</h1>
-            <h2>Login</h2>
+          <img src="src/components/img/logo2.png"></img>
+            <h2>Register for an Account</h2>
             <form class="form">
               <input
                 class="input"
@@ -119,7 +149,7 @@ export default function SignUp() {
                 onChange={(e) => setConfirmPassword(e.currentTarget.value)}
               />
             </form>
-            <Button onClick={() => onSubmit()}>Sign Up</Button>
+            <Button onClick={() => onSubmit()} class="btn-signup">Sign Up</Button>
           </section>
           <section class="section signup">
             <span>
