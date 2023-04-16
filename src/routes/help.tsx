@@ -1,10 +1,7 @@
-import { Component } from 'solid-js';
 import { Navigate, Title } from 'solid-start';
-import { createEffect, createSignal, Show } from 'solid-js';
+import { createSignal, Show } from 'solid-js';
 import Button from '~/components/Button';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '~/auth';
-import { useUser } from '~/context/User';
+import logo from './logo2.png';
 
 export default function Dropdown() {
   const [back, setBack] = createSignal(false);
@@ -79,14 +76,18 @@ export default function Dropdown() {
       <main>
         <section class="about us">
           <h1>Bridge to Belonging</h1>
-          {/* <img src={logo} alt="Logo" /> */}
+          <img src={logo} alt="Logo" />
         </section>
         <section class="section dropdown">
           <h3>What is Bridge to Belonging?</h3>
           <section class="about bridge">
             <span>
-              this is just a lot of sample text. idk what to say lmao.
-              aaaaaaaaaaaaaaaaaa
+              Bridge to Belonging promotes a sense of unity among their users,
+              connecting them to local communities based on their personal
+              interests. While Bridge to Belonging was designed towards
+              immigrants struggling to find their community in new areas, Bridge
+              to Belonging is open to any user looking for similar-minded
+              people.
             </span>
           </section>
           <section class="back button">

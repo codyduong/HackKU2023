@@ -1,11 +1,8 @@
 import { Component } from 'solid-js';
 import { Navigate, Title } from 'solid-start';
-import { createEffect, createSignal, Show } from 'solid-js';
+import { createSignal, Show } from 'solid-js';
 import Button from '~/components/Button';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '~/auth';
-import { useUser } from '~/context/User';
-import { setUncaughtExceptionCaptureCallback } from 'process';
+import logo from './logo2.png';
 
 export default function Dropdown() {
   const [edit, setEdit] = createSignal(false);
@@ -22,11 +19,11 @@ export default function Dropdown() {
   return (
     <>
       <Show when={edit()}>
-        <Navigate href="/dashboard" />
+        <Navigate href="/help" />
       </Show>
 
       <Show when={settings()}>
-        <Navigate href="/dashboard" />
+        <Navigate href="/help" />
       </Show>
 
       <Show when={help()}>
@@ -104,8 +101,7 @@ export default function Dropdown() {
       <main>
         <section class="section login">
           <h1>Bridge to Belonging</h1>
-          {/* <img src={logo} alt="Logo" /> */}
-          <h2>image tba</h2>
+          <img src={logo} alt="Logo" />
         </section>
         <section class="section dropdown">
           <h2>Hello, User</h2>
