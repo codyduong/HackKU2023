@@ -22,7 +22,6 @@ export default function SignUp() {
       setResult(
         await createUserWithEmailAndPassword(auth, email(), password())
       );
-      console.log(result());
     } catch (e) {
       console.warn(e);
     }

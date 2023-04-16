@@ -386,6 +386,7 @@ export default function Dashboard() {
             padding: 4px;
             padding-right: 2px;
             cursor: pointer;
+            user-select: none;
           }
 
           .img-place {
@@ -453,9 +454,11 @@ export default function Dashboard() {
               <span role="separator">|</span>
               <span>
                 {`${
-                  comments()?.docs.filter(
-                    (comment) => comment.get('rating') !== null
-                  ) ?? [].length
+                  (
+                    comments()?.docs.filter(
+                      (comment) => comment.get('rating') !== null
+                    ) ?? []
+                  ).length
                 }`}{' '}
                 Ratings
               </span>
