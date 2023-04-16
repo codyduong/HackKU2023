@@ -19,6 +19,7 @@ import { db } from '~/auth';
 import { ImCancelCircle } from 'solid-icons/im';
 import Modal, { CreateCommentModal } from '~/components/Modal';
 import Comments from '~/components/Comments';
+import Navbar from '~/components/Navbar';
 
 type SelectPlaceDetails = Pick<
   google.maps.places.PlaceResult,
@@ -53,6 +54,11 @@ const styles: Record<string, google.maps.MapTypeStyle[]> = {
       elementType: 'labels.icon',
       stylers: [{ visibility: 'off' }],
     },
+    {
+      featureType: 'road',
+      elementType: 'labels.icon',
+      stylers: [{ visibility: 'off' }],
+    },
   ],
 };
 
@@ -81,7 +87,7 @@ export default function Dashboard() {
   const [markers, setMarkers] = createSignal<google.maps.Marker[]>([]);
   // Either we are 'Creating' or 'Viewing'
   const [viewingMode, setViewingMode] = createSignal<'creating' | 'viewing'>(
-    'creating'
+    'viewing'
   );
   const [comments, setComments] = createSignal<QuerySnapshot<DocumentData>>();
   const [creatingComment, setCreatingComment] = createSignal(false);
@@ -105,6 +111,7 @@ export default function Dashboard() {
         zoom: 16,
         mapTypeControl: false,
         streetViewControl: false,
+        fullscreenControl: false,
       });
       const p = new PlacesService(m);
       m.addListener(
@@ -210,6 +217,8 @@ export default function Dashboard() {
               const latLngLiteral = { lat: value.lat!, lng: value.lng! };
               const marker = new google.maps.Marker({
                 position: latLngLiteral,
+                label: value.name,
+                collisionBehavior: 'REQUIRED_AND_HIDES_OPTIONAL',
                 icon: {
                   url: value.icon!,
                   size: new google.maps.Size(71, 71),
@@ -337,14 +346,6 @@ export default function Dashboard() {
             padding: 0.5rem;
           }
 
-          .navbar {
-            flex-flow: row nowrap;
-            width: 100vw;
-            height: 4rem;
-            z-index: 1000;
-            background-color: #fff;
-          }
-
           .ul-tags {
             all: unset;
             display: flex;
@@ -418,6 +419,8 @@ export default function Dashboard() {
         `}
       </style>
       <main>
+        <Navbar viewingMode={viewingMode} setViewingMode={setViewingMode} />
+        <div id="map" class="map" />
         <Modal open={!!place().placeId} onClose={clear} onSubmit={onSubmit}>
           <h3>{place().name ?? place().placeId}</h3>
           <img
@@ -515,20 +518,6 @@ export default function Dashboard() {
           }}
           placeId={place().placeId}
         />
-        <section class="section navbar">
-          <Button onClick={() => signOut()}>Sign Out</Button>
-          <Button
-            onClick={() => {
-              setViewingMode((p) =>
-                p === 'creating' ? 'viewing' : 'creating'
-              );
-            }}
-          >
-            Switch to {viewingMode() === 'creating' ? 'viewing' : 'creating'}{' '}
-            mode
-          </Button>
-        </section>
-        <div id="map" class="map" />
       </main>
     </>
   );
