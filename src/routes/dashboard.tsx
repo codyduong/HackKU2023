@@ -92,10 +92,6 @@ export default function Dashboard() {
   const [comments, setComments] = createSignal<QuerySnapshot<DocumentData>>();
   const [creatingComment, setCreatingComment] = createSignal(false);
 
-  // Forum const
-  const [forum, startForum] = createSignal(false);
-  const toggleForum = () => startForum(!forum());
-
   if (!isServer) {
     const loader = new Loader({
       apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -331,9 +327,6 @@ export default function Dashboard() {
       <Show when={!user()}>
         <Navigate href="/login" />
       </Show>
-      <Show when={forum()}>
-        <Navigate href="/forum" />
-      </Show>
       <style jsx>
         {`
           main {
@@ -525,24 +518,6 @@ export default function Dashboard() {
           }}
           placeId={place().placeId}
         />
-<<<<<<< Updated upstream
-=======
-        <section class="section navbar">
-          <Button onClick={() => signOut()}>Sign Out</Button>
-          <Button
-            onClick={() => {
-              setViewingMode((p) =>
-                p === 'creating' ? 'viewing' : 'creating'
-              );
-            }}
-          >
-            Switch to {viewingMode() === 'creating' ? 'viewing' : 'creating'}{' '}
-            mode
-          </Button>
-          <Button onClick={() => toggleForum()}> Forum </Button>
-        </section>
-        <div id="map" class="map" />
->>>>>>> Stashed changes
       </main>
     </>
   );

@@ -1,8 +1,17 @@
-import { Accessor, onCleanup, onMount, Setter, Show } from 'solid-js';
+import {
+  Accessor,
+  createSignal,
+  onCleanup,
+  onMount,
+  Setter,
+  Show,
+} from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { IoLogOutOutline, IoSettingsOutline } from 'solid-icons/io';
 import { TbSwitch3 } from 'solid-icons/tb';
 import { useUser } from '~/context/User';
+import { Navigate } from 'solid-start';
+import { CgFeed } from 'solid-icons/cg';
 
 interface NavbarUseMenuProps {
   open: Accessor<boolean>;
@@ -15,6 +24,9 @@ let selfRef: HTMLDivElement;
 
 export default function NavbarUserMenu(props: NavbarUseMenuProps) {
   const [, { signOut }] = useUser();
+  // Forum const
+  const [forum, startForum] = createSignal(false);
+  const toggleForum = () => startForum(!forum());
 
   const handleMouse = (e: MouseEvent) => {
     if (e.target && selfRef && !selfRef.contains(e.target as any)) {
@@ -88,6 +100,9 @@ export default function NavbarUserMenu(props: NavbarUseMenuProps) {
           gap: 2px;
         }
       `}</style>
+      <Show when={forum()}>
+        <Navigate href="/forum" />
+      </Show>
       <Portal mount={document.getElementById('modal-root')!}>
         <div class="navbar-menu-wrapper" ref={selfRef}>
           <div class="navbar-menu margin">
@@ -105,6 +120,10 @@ export default function NavbarUserMenu(props: NavbarUseMenuProps) {
             >
               <TbSwitch3 />
               Switch View Mode
+            </button>
+            <button class="btn padding" onClick={() => toggleForum()}>
+              <CgFeed />
+              Forum
             </button>
           </div>
           <button
