@@ -1,10 +1,12 @@
-import { createSignal, Show } from 'solid-js';
+import { createSignal, Show, For, onMount } from 'solid-js';
 import { QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
 import { FaSolidCircleUser, FaRegularTrashCan } from 'solid-icons/fa';
 import { useUser } from '~/context/User';
 import { doc, deleteDoc } from 'firebase/firestore';
-import { db } from '~/auth';
+import { db, storage } from '~/auth';
 import DeleteConfirmationModal from '../Modal/DeleteConfirmationModal';
+import Modal from '../Modal';
+import { ref, getDownloadURL } from 'firebase/storage';
 
 interface CommentProps {
   comment: QueryDocumentSnapshot<DocumentData>;
@@ -19,12 +21,28 @@ export default function Comment(props: CommentProps) {
   /* eslint-enable solid/reactivity */
   const [user] = useUser();
   const [showDelete, setShowDelete] = createSignal(false);
+  const [showAttachments, setShowAttachments] = createSignal(false);
+  const [files, setFiles] = createSignal<string[]>([]);
+  const [error, setError] = createSignal(false);
 
   const handleDelete = async () => {
     await deleteDoc(doc(db, 'comments', props.comment.id));
     await props.refetch();
     setShowDelete(false);
   };
+
+  const getFile = async (f: string) => {
+    const storageRef = ref(storage, f);
+    return await getDownloadURL(storageRef);
+  };
+
+  onMount(async () => {
+    const temp: string[] = [];
+    for await (const file of props.comment.get('attachments') ?? []) {
+      temp.push(await getFile(file));
+    }
+    setFiles(temp);
+  });
 
   return (
     <>
@@ -80,14 +98,20 @@ export default function Comment(props: CommentProps) {
           <div class="group">
             <div class="image-wrapper">
               <Show
-                when={icon}
+                when={icon && !error}
                 fallback={
                   <FaSolidCircleUser
                     style={{ width: '32px', height: '32px' }}
                   />
                 }
               >
-                <img src={icon} alt={`${email} Icon`} />
+                <img
+                  src={icon}
+                  alt={`${email} Icon`}
+                  onError={() => {
+                    setError(true);
+                  }}
+                />
               </Show>
             </div>
             <span>{email}</span>
@@ -104,7 +128,30 @@ export default function Comment(props: CommentProps) {
           </Show>
         </div>
         <p>{description}</p>
+        <Show when={files().length > 0}>
+          <button
+            onClick={() => {
+              setShowAttachments(true);
+            }}
+          >
+            View attachments
+          </button>
+        </Show>
       </li>
+      {/* Just throw it in some modal */}
+      <Modal
+        open={showAttachments()}
+        onClose={() => {
+          setShowAttachments(false);
+        }}
+        onSubmit={null}
+      >
+        <For each={files()}>
+          {(file) => {
+            return <img src={file} />;
+          }}
+        </For>
+      </Modal>
       <DeleteConfirmationModal
         open={showDelete()}
         onClose={() => {

@@ -14,6 +14,8 @@ import {
   where,
   QuerySnapshot,
   DocumentData,
+  or,
+  and,
 } from 'firebase/firestore';
 import { db } from '~/auth';
 import { ImCancelCircle } from 'solid-icons/im';
@@ -273,13 +275,27 @@ export default function Dashboard() {
     if (!placeId) {
       return;
     }
-    const comments = collection(db, 'comments');
-    const comResult = await getDocs(
-      query(comments, where('placeId', '==', placeId))
-    );
-    if (comResult) {
-      setComments(comResult);
+    try {
+      const comments = collection(db, 'comments');
+      const comResult = await getDocs(
+        query(
+          comments,
+          and(
+            where('placeId', '==', placeId),
+            or(
+              where('author', '==', user()!.uid),
+              where('approved', '==', true)
+            )
+          )
+        )
+      );
+      if (comResult) {
+        setComments(comResult);
+      }
+    } catch (e) {
+      console.warn(e);
     }
+    return;
   };
 
   // Attempts to find the place on firestore
@@ -467,7 +483,7 @@ export default function Dashboard() {
               </span>
             </span>
           </span>
-          <h4>Current tags</h4>
+          {/* <h4>Current tags</h4>
           <ul class="ul-tags">
             <For each={tags()}>
               {(tag) => (
@@ -501,7 +517,7 @@ export default function Dashboard() {
                 size={8}
               />
             </li>
-          </ul>
+          </ul> */}
           <Comments
             comments={comments()}
             refetch={() => {
