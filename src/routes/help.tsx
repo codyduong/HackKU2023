@@ -80,14 +80,16 @@ export default function Dropdown() {
         <section class="section dropdown">
           <h3>What is Bridge to Belonging?</h3>
           <section class="about bridge">
-            <span>
-              Bridge to Belonging promotes a sense of unity among their users,
-              connecting them to local communities based on their personal
-              interests. While Bridge to Belonging was designed towards
-              immigrants struggling to find their community in new areas, Bridge
-              to Belonging is open to any user looking for similar-minded
-              people.
-            </span>
+            <center>
+              <span>
+                Bridge to Belonging promotes a sense of unity among their users,
+                connecting them to local communities based on their personal
+                interests. While Bridge to Belonging was designed towards
+                immigrants struggling to find their community in new areas,
+                Bridge to Belonging is open to any user looking for
+                similar-minded people.
+              </span>
+            </center>
           </section>
           <section class="back button">
             <Button onClick={() => toggleBack()}>Go Back</Button>

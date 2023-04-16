@@ -27,6 +27,8 @@ export default function NavbarUserMenu(props: NavbarUseMenuProps) {
   // Forum const
   const [forum, startForum] = createSignal(false);
   const toggleForum = () => startForum(!forum());
+  const [pfp, startPfp] = createSignal(false);
+  const togglePfp = () => startPfp(!pfp());
 
   const handleMouse = (e: MouseEvent) => {
     if (e.target && selfRef && !selfRef.contains(e.target as any)) {
@@ -103,10 +105,13 @@ export default function NavbarUserMenu(props: NavbarUseMenuProps) {
       <Show when={forum()}>
         <Navigate href="/forum" />
       </Show>
+      <Show when={pfp()}>
+        <Navigate href="/profiledrop" />
+      </Show>
       <Portal mount={document.getElementById('modal-root')!}>
         <div class="navbar-menu-wrapper" ref={selfRef}>
           <div class="navbar-menu margin">
-            <button class="btn padding">
+            <button class="btn padding" onClick={() => togglePfp()}>
               <IoSettingsOutline />
               Settings
             </button>
