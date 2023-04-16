@@ -5,6 +5,7 @@ import {
   JSX,
   Accessor,
   Setter,
+  onMount,
 } from 'solid-js';
 import app, { auth } from '~/auth';
 import { getAuth, Auth, User, signOut } from 'firebase/auth';
@@ -47,6 +48,10 @@ export function UserProvider(props: UserProviderProps) {
         },
       },
     ] as UserContextValue;
+
+  onMount(() => {
+    setUser(getAuth(app).currentUser);
+  });
 
   return (
     <UserContext.Provider value={value}>{props.children}</UserContext.Provider>
