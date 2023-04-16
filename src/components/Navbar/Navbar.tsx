@@ -1,6 +1,7 @@
 import { Accessor, createSignal, Setter, Show } from 'solid-js';
 import { useUser } from '~/context/User';
 import NavbarUserMenu from './NavbarUserMenu';
+import { FaSolidCircleUser } from 'solid-icons/fa';
 
 interface NavbarProps {
   viewingMode: Accessor<'creating' | 'viewing'>;
@@ -10,6 +11,7 @@ interface NavbarProps {
 export default function Navbar(props: NavbarProps) {
   const [user] = useUser();
   const [open, setOpen] = createSignal(false);
+  const [error, setError] = createSignal(false);
 
   return (
     <>
@@ -43,7 +45,18 @@ export default function Navbar(props: NavbarProps) {
       `}</style>
       <div class="navbar right">
         <button class="user-btn user-icon" onClick={() => setOpen(!open())}>
-          <img class="user-icon" src={user()?.photoURL ?? ''} />
+          <Show
+            when={!error}
+            fallback={
+              <FaSolidCircleUser style={{ width: '40px', height: '40px' }} />
+            }
+          >
+            <img
+              class="user-icon"
+              src={user()?.photoURL ?? ''}
+              onError={() => setError(true)}
+            />
+          </Show>
         </button>
       </div>
       <Show when={open()}>
@@ -54,19 +67,6 @@ export default function Navbar(props: NavbarProps) {
           setViewingMode={props.setViewingMode}
         />
       </Show>
-      {/* <section class="section navbar">
-        <Button onClick={() => signOut()}>Sign Out</Button>
-        <Button
-          onClick={() => {
-            props.setViewingMode((p) =>
-              p === 'creating' ? 'viewing' : 'creating'
-            );
-          }}
-        >
-          Switch to{' '}
-          {props.viewingMode() === 'creating' ? 'viewing' : 'creating'} mode
-        </Button>
-      </section> */}
     </>
   );
 }
