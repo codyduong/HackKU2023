@@ -15,6 +15,13 @@ export default function SignUp() {
   });
   
   const onSubmit = async () => {
+<<<<<<< Updated upstream
+=======
+    if (password().length < 6) {
+      alert('Password must be at least 6 characters');
+      return;
+    }
+>>>>>>> Stashed changes
     if (password() !== confirmPassword()) {
       alert('Passwords do not match!');
       return;
