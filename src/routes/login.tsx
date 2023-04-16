@@ -144,7 +144,7 @@ export default function Login() {
       </style>
       <main>
         <section class="section login">
-          <img src="src/components/img/logo2.png" />
+          <img src="/logo2.png" />
           <h2>Login</h2>
           <form class="form">
             <input
