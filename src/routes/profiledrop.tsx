@@ -1,4 +1,3 @@
-import { Component } from 'solid-js';
 import { Navigate, Title } from 'solid-start';
 import { createSignal, Show } from 'solid-js';
 import Button from '~/components/Button';
