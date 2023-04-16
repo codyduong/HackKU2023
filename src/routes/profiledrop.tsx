@@ -2,7 +2,6 @@ import { Component } from 'solid-js';
 import { Navigate, Title } from 'solid-start';
 import { createSignal, Show } from 'solid-js';
 import Button from '~/components/Button';
-import logo from './logo2.png';
 
 export default function Dropdown() {
   const [edit, setEdit] = createSignal(false);
@@ -101,7 +100,7 @@ export default function Dropdown() {
       <main>
         <section class="section login">
           <h1>Bridge to Belonging</h1>
-          <img src={logo} alt="Logo" />
+          <img src="/logo2.png" alt="Logo" />
         </section>
         <section class="section dropdown">
           <h2>Hello, User</h2>
