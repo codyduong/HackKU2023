@@ -6,7 +6,8 @@
     "start": "solid-start start",
     "ci": "yarn install --frozen-lockfile",
     "lint": "yarn eslint",
-    "lint:changed": "./scripts/lint.sh"
+    "lint:changed": "./scripts/lint.sh",
+    "deploy": "yarn build && docker build . --tag us-central1-docker.pkg.dev/btob-330a6/web/web:latest"
   },
   "type": "module",
   "devDependencies": {

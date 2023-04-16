@@ -87,7 +87,7 @@ export default function SignUp() {
             box-sizing: border-box;
             margin-bottom: 10px;
           }
-          
+
           .form input:focus {
             outline: none;
             border-color: #ff847c;
@@ -119,7 +119,7 @@ export default function SignUp() {
             padding: 0.5rem 1rem;
             transition: all 0.3s ease-in-out;
           }
-          
+
           .btn-signup:hover {
             background-color: #ff847c;
             color: #fff;
@@ -129,7 +129,7 @@ export default function SignUp() {
       <Show when={!result()} fallback={<Cats />}>
         <main>
           <section class="section login">
-          <img src="src/components/img/logo2.png"></img>
+            <img src="/logo2.png" />
             <h2>Register for an Account</h2>
             <form class="form">
               <input
@@ -156,7 +156,9 @@ export default function SignUp() {
                 onChange={(e) => setConfirmPassword(e.currentTarget.value)}
               />
             </form>
-            <Button onClick={() => onSubmit()} class="btn-signup">Sign Up</Button>
+            <Button onClick={() => onSubmit()} class="btn-signup">
+              Sign Up
+            </Button>
           </section>
           <section class="section signup">
             <span>
