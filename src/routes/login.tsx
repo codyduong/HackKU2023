@@ -46,7 +46,6 @@ export default function Login() {
       <Title>Login - B2B</Title>
       <style jsx>
         {`
-
           h2 {
             margin-top: 0;
             font-size: 1.5rem;
@@ -88,7 +87,7 @@ export default function Login() {
             box-sizing: border-box;
             margin-bottom: 10px;
           }
-          
+
           .form input:focus {
             outline: none;
             border-color: #ff847c;
@@ -120,7 +119,7 @@ export default function Login() {
             padding: 0.5rem 1rem;
             transition: all 0.3s ease-in-out;
           }
-          
+
           .btn-signin:hover {
             background-color: #ff847c;
             color: #fff;
@@ -135,9 +134,8 @@ export default function Login() {
             padding: 0.5rem 1rem;
             transition: all 0.3s ease-in-out;
             margin-top: 100px;
-
           }
-          
+
           .google-signin:hover {
             background-color: #ff847c;
             color: #fff;
@@ -146,7 +144,7 @@ export default function Login() {
       </style>
       <main>
         <section class="section login">
-        <img src="src/components/img/logo2.png"></img>
+          <img src="src/components/img/logo2.png" />
           <h2>Login</h2>
           <form class="form">
             <input
@@ -165,13 +163,17 @@ export default function Login() {
               onChange={(e) => setPassword(e.currentTarget.value)}
             />
           </form>
-          <Button onClick={() => onSubmit()} class="btn-signin">Sign In</Button>
-</section>
+          <Button onClick={() => onSubmit()} class="btn-signin">
+            Sign In
+          </Button>
+        </section>
         <section class="section divider" role="separator">
           <span class="or">or</span>
         </section>
         <section class="section signup-providers">
-          <Button onClick={() => onGoogle()} class="google-signin">Sign in with Google</Button>
+          <Button onClick={() => onGoogle()} class="google-signin">
+            Sign in with Google
+          </Button>
         </section>
         <section class="section signup">
           <span>

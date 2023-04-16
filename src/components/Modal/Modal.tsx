@@ -73,10 +73,6 @@ export default function Modal(props: ModalProps) {
             padding: 0.5rem 1rem 1rem;
           }
 
-          h3 {
-            margin-top: 0;
-          }
-
           h4 {
             margin-top: 0;
             margin-bottom: 1rem;

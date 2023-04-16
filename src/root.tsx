@@ -47,6 +47,10 @@ function GlobalStyles() {
         font-size: 1.5rem;
         border-radius: 8px;
       }
+
+      h3 {
+        margin-top: 0;
+      }
     }
   `;
   return null;
