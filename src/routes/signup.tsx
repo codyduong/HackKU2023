@@ -18,6 +18,14 @@ export default function SignUp() {
   });
 
   const onSubmit = async () => {
+    if (password().length < 6) {
+      alert('Password must be at least 6 characters');
+      return;
+    }
+    if (password() !== confirmPassword()) {
+      alert('Passwords do not match!');
+      return;
+    }
     try {
       setResult(
         await createUserWithEmailAndPassword(auth, email(), password())
