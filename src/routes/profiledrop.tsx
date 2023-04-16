@@ -7,12 +7,10 @@ export default function Dropdown() {
   const [edit, setEdit] = createSignal(false);
   const [settings, setSettings] = createSignal(false);
   const [help, setHelp] = createSignal(false);
-  const [logout, setLogout] = createSignal(false);
   const [home, setHome] = createSignal(false);
   const toggleEdit = () => setEdit(!edit());
   const toggleSettings = () => setSettings(!settings());
   const toggleHelp = () => setHelp(!help());
-  const toggleLogout = () => setLogout(!logout());
   const toggleHome = () => setHome(!home());
 
   return (
@@ -27,10 +25,6 @@ export default function Dropdown() {
 
       <Show when={help()}>
         <Navigate href="/help" />
-      </Show>
-
-      <Show when={logout()}>
-        <Navigate href="/googlelogin" />
       </Show>
 
       <Show when={home()}>
@@ -108,7 +102,6 @@ export default function Dropdown() {
             <Button onClick={() => toggleEdit()}>Edit Profile</Button>
             <Button onClick={() => toggleHelp()}>Help & Support</Button>
             <Button onClick={() => toggleSettings()}>Settings & Privacy</Button>
-            <Button onClick={() => toggleLogout()}>Logout</Button>
             <Button onClick={() => toggleHome()}>Back to Dashboard</Button>
           </section>
         </section>
